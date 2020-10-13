@@ -1,6 +1,7 @@
 package io.jenkins.plugins;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractBuild;
@@ -67,11 +68,15 @@ public class CucumberPublisher extends Notifier {
     }
 
     @Override
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("Executing Cucumber plugin");
         try {
             build.addAction(new TestAction(build, path));
-            Build buildTO = new Build(format("%s%s", Objects.requireNonNull(getInstanceOrNull()).getConfiguredRootUrl(), build.getUrl()));
+            Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
+                    .withBuildNumber(build.getNumber())
+                    .withProject(build.getParent().getName())
+                    .build();
             List<String> webhooks = fill(webhook1, webhook2, webhook3, webhook4, webhook5);
             webhooks.forEach(url -> {
                 try {
