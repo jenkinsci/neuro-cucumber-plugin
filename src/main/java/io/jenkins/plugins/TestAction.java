@@ -59,7 +59,7 @@ public class TestAction implements Action, Serializable {
     private void getTestResults() throws IOException, InterruptedException {
         FilePath filePath = new FilePath(Objects.requireNonNull( build.getWorkspace()), path);
         InputStream is = filePath.read();
-        String text = IOUtils.toString(is, StandardCharsets.UTF_8.name());
+        String text = IOUtils.toString(is, StandardCharsets.UTF_8.name()).replaceAll("[\\x00-\\x09\\x11\\x12\\x14-\\x1F\\x7F]", "");
         testResult =  parse(text, List.class);
     }
 
