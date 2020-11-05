@@ -70,8 +70,9 @@ public class CucumberPublisher extends Notifier {
     @Override
     @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
-        listener.getLogger().println("Executing Cucumber plugin");
+        listener.getLogger().println("Executing Neuro Cucumber plugin...");
         try {
+            listener.getLogger().println("Reading json file from cucumber test report");
             build.addAction(new TestAction(build, path));
             Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
                     .withBuildNumber(build.getNumber())
@@ -80,6 +81,7 @@ public class CucumberPublisher extends Notifier {
             List<String> webhooks = fill(webhook1, webhook2, webhook3, webhook4, webhook5);
             webhooks.forEach(url -> {
                 try {
+                    listener.getLogger().printf("Webhook: %s%n%n", url);
                     HttpClient client = new HttpClient(url);
                     client.post("", buildTO);
                 } catch (UnsupportedEncodingException | JsonProcessingException e) {
