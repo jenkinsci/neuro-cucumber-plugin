@@ -17,7 +17,8 @@
         <jenkins.version>2.235.1</jenkins.version>
         <java.level>8</java.level>
     </properties>
-    <name>Cucumber Plugin</name>
+    <name>Neuro Cucumber Plugin</name>
+    <description>Plugin to extract the results of Cucumber tests, developed by the Neuro team.</description>
 
     <dependencyManagement>
         <dependencies>

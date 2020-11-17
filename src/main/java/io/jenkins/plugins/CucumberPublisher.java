@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static java.lang.String.format;
 import static jenkins.model.Jenkins.getInstanceOrNull;
 import static org.apache.commons.lang.StringUtils.strip;
 
