@@ -72,17 +72,32 @@ public class CucumberPublisher extends Notifier {
         listener.getLogger().println("Executing Neuro Cucumber plugin...");
         try {
             listener.getLogger().println("Reading json file from cucumber test report");
-            build.addAction(new TestAction(build, path));
-            Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
+            TestAction testAction = new TestAction(build, path);
+            List<TestAction> actions = new ArrayList<>();
+            actions.add(testAction);
+            build.addAction(testAction);
+            /*Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
                     .withBuildNumber(build.getNumber())
                     .withProject(build.getParent().getName())
-                    .build();
+                    .build();*/
+            BuildDetail buildDetail = new BuildDetail()
+                    .withId(build.getId())
+                    .withProjectName(build.getProject().getName())
+                    .withNumber(build.getNumber())
+                    .withDisplayName(build.getDisplayName())
+                    .withDuration(build.getDuration())
+                    .withEstimatedDuration(build.getEstimatedDuration())
+                    .withResult(build.getResult().toString())
+                    .withTimeStamp(build.getTimestamp().toInstant().toEpochMilli())
+                    .withUrl(build.getUrl())
+                    .withActions(actions);
+
             List<String> webhooks = fill(webhook1, webhook2, webhook3, webhook4, webhook5);
             webhooks.forEach(url -> {
                 try {
                     listener.getLogger().printf("Webhook: %s%n%n", url);
                     HttpClient client = new HttpClient(url);
-                    client.post("", buildTO);
+                    client.post("", buildDetail);
                 } catch (UnsupportedEncodingException | JsonProcessingException e) {
                     listener.getLogger().println(e.getMessage());
                 }
