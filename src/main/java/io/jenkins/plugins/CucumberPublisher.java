@@ -73,15 +73,14 @@ public class CucumberPublisher extends Notifier {
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("Executing Neuro Cucumber plugin...");
         try {
+            if (organization == null || organization.trim().equals("")) {
+                throw new RuntimeException("Neuro organization id cann´t be null or blank");
+            }
             listener.getLogger().println("Reading json file from cucumber test report");
             TestAction testAction = new TestAction(build, path);
             List<TestAction> actions = new ArrayList<>();
             actions.add(testAction);
             build.addAction(testAction);
-            /*Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
-                    .withBuildNumber(build.getNumber())
-                    .withProject(build.getParent().getName())
-                    .build();*/
             BuildDetail buildDetail = new BuildDetail()
                     .withId(build.getId())
                     .withProjectName(build.getProject().getName())
