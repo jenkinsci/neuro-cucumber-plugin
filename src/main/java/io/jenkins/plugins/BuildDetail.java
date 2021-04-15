@@ -15,6 +15,7 @@ public class BuildDetail {
     private String url;
     private List<TestAction> actions;
     private String projectName;
+    private String organization;
 
     public BuildDetail withNumber(Integer number) {
         this.setNumber(number);
@@ -64,6 +65,11 @@ public class BuildDetail {
 
     public BuildDetail withProjectName(String projectName) {
         this.setProjectName(projectName);
+        return this;
+    }
+
+    public BuildDetail withOrganization(String organization) {
+        this.setOrganization(organization);
         return this;
     }
 
@@ -153,5 +159,13 @@ public class BuildDetail {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 }

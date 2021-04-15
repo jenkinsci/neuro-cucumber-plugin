@@ -18,13 +18,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static jenkins.model.Jenkins.getInstanceOrNull;
 import static org.apache.commons.lang.StringUtils.strip;
 
 
 public class CucumberPublisher extends Notifier {
+    private final String organization;
     private final String path;
     private final String webhook1;
     private final String webhook2;
@@ -33,7 +32,8 @@ public class CucumberPublisher extends Notifier {
     private final String webhook5;
 
     @DataBoundConstructor
-    public CucumberPublisher(String path, List<String> webhooks, String webhook1, String webhook2, String webhook3, String webhook4, String webhook5) {
+    public CucumberPublisher(String organization, String path, String webhook1, String webhook2, String webhook3, String webhook4, String webhook5) {
+        this.organization = organization;
         this.path = path;
         this.webhook1 = webhook1;
         this.webhook2 = webhook2;
@@ -41,6 +41,8 @@ public class CucumberPublisher extends Notifier {
         this.webhook4 = webhook4;
         this.webhook5 = webhook5;
     }
+
+    public String getOrganization() {return organization;}
 
     public String getPath() {
         return path;
@@ -90,7 +92,8 @@ public class CucumberPublisher extends Notifier {
                     .withResult(build.getResult().toString())
                     .withTimeStamp(build.getTimestamp().toInstant().toEpochMilli())
                     .withUrl(build.getUrl())
-                    .withActions(actions);
+                    .withActions(actions)
+                    .withOrganization(organization);
 
             List<String> webhooks = fill(webhook1, webhook2, webhook3, webhook4, webhook5);
             webhooks.forEach(url -> {
