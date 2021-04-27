@@ -18,13 +18,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-import static jenkins.model.Jenkins.getInstanceOrNull;
 import static org.apache.commons.lang.StringUtils.strip;
 
 
 public class CucumberPublisher extends Notifier {
+    private final String organization;
     private final String path;
     private final String webhook1;
     private final String webhook2;
@@ -33,7 +32,8 @@ public class CucumberPublisher extends Notifier {
     private final String webhook5;
 
     @DataBoundConstructor
-    public CucumberPublisher(String path, List<String> webhooks, String webhook1, String webhook2, String webhook3, String webhook4, String webhook5) {
+    public CucumberPublisher(String organization, String path, String webhook1, String webhook2, String webhook3, String webhook4, String webhook5) {
+        this.organization = organization;
         this.path = path;
         this.webhook1 = webhook1;
         this.webhook2 = webhook2;
@@ -41,6 +41,8 @@ public class CucumberPublisher extends Notifier {
         this.webhook4 = webhook4;
         this.webhook5 = webhook5;
     }
+
+    public String getOrganization() {return organization;}
 
     public String getPath() {
         return path;
@@ -71,18 +73,33 @@ public class CucumberPublisher extends Notifier {
     public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
         listener.getLogger().println("Executing Neuro Cucumber plugin...");
         try {
+            if (organization == null || organization.trim().equals("")) {
+                throw new RuntimeException("Neuro organization id cann´t be null or blank");
+            }
             listener.getLogger().println("Reading json file from cucumber test report");
-            build.addAction(new TestAction(build, path));
-            Build buildTO = new Builder(Objects.requireNonNull(getInstanceOrNull()).getRootUrl(), build.getUrl())
-                    .withBuildNumber(build.getNumber())
-                    .withProject(build.getParent().getName())
-                    .build();
+            TestAction testAction = new TestAction(build, path);
+            List<TestAction> actions = new ArrayList<>();
+            actions.add(testAction);
+            build.addAction(testAction);
+            BuildDetail buildDetail = new BuildDetail()
+                    .withId(build.getId())
+                    .withProjectName(build.getProject().getName())
+                    .withNumber(build.getNumber())
+                    .withDisplayName(build.getDisplayName())
+                    .withDuration(build.getDuration())
+                    .withEstimatedDuration(build.getEstimatedDuration())
+                    .withResult(build.getResult().toString())
+                    .withTimeStamp(build.getTimestamp().toInstant().toEpochMilli())
+                    .withUrl(build.getUrl())
+                    .withActions(actions)
+                    .withOrganization(organization);
+
             List<String> webhooks = fill(webhook1, webhook2, webhook3, webhook4, webhook5);
             webhooks.forEach(url -> {
                 try {
                     listener.getLogger().printf("Webhook: %s%n%n", url);
                     HttpClient client = new HttpClient(url);
-                    client.post("", buildTO);
+                    client.post("", buildDetail);
                 } catch (UnsupportedEncodingException | JsonProcessingException e) {
                     listener.getLogger().println(e.getMessage());
                 }
