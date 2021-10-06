@@ -9,22 +9,18 @@
     </parent>
     <groupId>io.jenkins.plugins</groupId>
     <artifactId>neuro-cucumber</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.2-SNAPSHOT</version>
     <packaging>hpi</packaging>
     <properties>
-        <revision>1.0.3-SNAPSHOT</revision>
+        <revision>1.0.2-SNAPSHOT</revision>
 
-        <changelist>1.0.3-SNAPSHOT</changelist>
+        <changelist>1.0.2-SNAPSHOT</changelist>
         <jenkins.version>2.235.1</jenkins.version>
         <java.level>8</java.level>
     </properties>
     <name>Neuro Cucumber Plugin</name>
     <description>Plugin to extract the results of Cucumber tests, developed by the Neuro team.</description>
-    <scm>
-        <connection>scm:git:git://git@github.com:jenkinsci/neuro-cucumber-plugin.git</connection>
-        <developerConnection>scm:git:git://git@github.com:jenkinsci/neuro-cucumber-plugin.git</developerConnection>
 
-      </scm>
     <dependencyManagement>
         <dependencies>
             <dependency>
