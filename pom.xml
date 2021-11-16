@@ -20,7 +20,7 @@
     </properties>
     <name>Neuro Cucumber Plugin</name>
     <description>Plugin to extract the results of Cucumber tests, developed by the Neuro team.</description>
-    <url>https://wiki.jenkins.io/display/JENKINS/TODO+Plugin</url>
+    <url>https://github.com/jenkinsci/neuro-cucumber-plugin/</url>
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
