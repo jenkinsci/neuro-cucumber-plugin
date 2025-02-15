@@ -1,0 +1,4 @@
+<?jelly escape-by-default='true'?>
+<div>
+   Plugin to extract the results of Cucumber tests, developed by the Neuro team.
+</div>
